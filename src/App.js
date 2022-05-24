@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { addTodo } from './actions/todos';
 import './App.css';
+
 
 class App extends Component {
 
@@ -12,17 +14,27 @@ class App extends Component {
     this.setState({
       todo: event.target.value
     });
+    console.log(this.state.todo)
   }
 
   handleOnSubmit = event => {
     event.preventDefault();
     console.log("Todo being added: ", this.state.todo);
-    this.props.dispatch({ type: 'ADD_TODO', todo: this.state.todo });
+    this.props.addTodo(this.state.todo)
     this.setState({ todo: '' });
   }
 
+  addTodo = () => {
+    return ({
+      type: "ADD_TODO",
+      todo: this.state.todo
+    })
+  }
+
   render() {
+    
     const renderTodos = () => this.props.todos.map(todo => <li key={todo}>{todo}</li>);
+
     return (
       <div className="App">
       <form onSubmit={(event) => this.handleOnSubmit(event)}>
@@ -47,4 +59,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(App);
+
+export default connect( state => ({ todos: state.todos }), { addTodo })(App);
